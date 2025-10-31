@@ -38,7 +38,7 @@ const useAuth = () => {
       const decoded = jwtDecode(token);
       return decoded.id;
     } catch (err) {
-      console.error('Invalid token');
+      console.error('Invalid token', err);
       return null;
     }
   };

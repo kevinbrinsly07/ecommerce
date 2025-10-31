@@ -67,7 +67,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-3">
                 <Link to="/login" className="text-sm font-medium text-slate-700 hover:text-slate-900">Login</Link>
-                <Link to="/register" className="inline-flex items-center rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90">Sign Up</Link>
+                <Link to="/register" className="inline-flex items-center rounded-lg bg-linear-to-r from-blue-800 to-sky-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90">Sign Up</Link>
               </div>
             )}
           </div>
@@ -99,7 +99,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/login" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">Login</Link>
-                <Link to="/register" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90">Sign Up</Link>
+                <Link to="/register" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-white bg-linear-to-r from-blue-800 to-sky-500 hover:opacity-90">Sign Up</Link>
               </>
             )}
           </div>

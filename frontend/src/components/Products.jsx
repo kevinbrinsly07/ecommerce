@@ -2,24 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const pageStyle = { minHeight: '100vh', background: '#f3f4f6', padding: '30px 20px', fontFamily: 'system-ui, -apple-system, sans-serif' };
-const containerStyle = { maxWidth: '1100px', margin: '0 auto' };
-const headerStyle = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', gap: '16px', flexWrap: 'wrap' };
-const titleWrap = { display: 'flex', flexDirection: 'column', gap: '4px' };
-const titleStyle = { fontSize: '2.1rem', fontWeight: 700, color: '#111827' };
-const subtitleStyle = { color: '#6b7280' };
-const searchBox = { background: 'white', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '10px 14px', minWidth: '230px', display: 'flex', alignItems: 'center', gap: '8px' };
-const searchInput = { border: 'none', outline: 'none', flex: 1, fontSize: '0.9rem' };
-const gridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '18px' };
-const cardStyle = { background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.04)', border: '1px solid rgba(148, 163, 184, 0.25)', transition: 'transform 0.2s ease, box-shadow 0.2s ease' };
-const imgWrapper = { width: '100%', height: '180px', overflow: 'hidden', background: '#e5e7eb' };
-const imgStyle = { width: '100%', height: '100%', objectFit: 'cover' };
-const cardBody = { padding: '14px 16px 14px' };
-const productName = { fontWeight: 600, color: '#111827', marginBottom: '6px', fontSize: '1rem', minHeight: '40px' };
-const priceRow = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' };
-const priceText = { fontSize: '1.05rem', fontWeight: 700, color: '#4f46e5' };
-const viewBtn = { textDecoration: 'none', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', color: 'white', padding: '7px 14px', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 500, display: 'inline-block' };
-
 const Products = () => {
   const [products, setProducts] = useState([]);
 
@@ -30,36 +12,43 @@ const Products = () => {
   }, []);
 
   return (
-    <div style={pageStyle}>
-      <div style={containerStyle}>
-        <header style={headerStyle}>
-          <div style={titleWrap}>
-            <h1 style={titleStyle}>Explore products</h1>
-            <p style={subtitleStyle}>Browse our curated selection of items.</p>
+    <div className="min-h-screen bg-slate-50 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Explore products</h1>
+            <p className="text-slate-500 mt-1">Browse our curated selection of items.</p>
           </div>
-          <div style={searchBox}>
-            <input type="text" placeholder="Search products..." style={searchInput} disabled />
+          <div className="w-full sm:w-auto">
+            <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm sm:min-w-60">
+              <span className="text-slate-400 text-sm">🔍</span>
+              <input disabled className="bg-transparent flex-1 outline-none text-sm placeholder:text-slate-400" placeholder="Search products..." />
+            </div>
           </div>
         </header>
-        <div style={gridStyle}>
-          {products.map(product => (
-            <div key={product._id} style={cardStyle}>
-              <div style={imgWrapper}>
-                <img
-                  src={product.image || 'https://via.placeholder.com/150'}
-                  alt={product.name}
-                  style={imgStyle}
-                />
+
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product) => (
+            <div key={product._id} className="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
+              <div className="relative h-44 bg-slate-100">
+                <img src={product.image || 'https://via.placeholder.com/150'} alt={product.name} className="h-full w-full object-cover" />
+                <span className="absolute top-3 left-3 bg-white/90 text-[0.6rem] uppercase tracking-wide px-2 py-0.5 rounded-full text-slate-900">New</span>
               </div>
-              <div style={cardBody}>
-                <p style={productName}>{product.name}</p>
-                <div style={priceRow}>
-                  <span style={priceText}>${product.price}</span>
-                  <Link to={`/products/${product._id}`} style={viewBtn}>View details</Link>
+              <div className="p-4 flex flex-col gap-3 flex-1">
+                <p className="text-sm font-semibold text-slate-900 leading-snug line-clamp-2 min-h-10">{product.name}</p>
+                <div className="flex items-center justify-between gap-2 mt-auto">
+                  <span className="text-base font-bold text-indigo-600">${product.price}</span>
+                  <Link to={`/products/${product._id}`} className="inline-flex items-center gap-1 text-xs font-medium text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full px-3 py-1 transition">
+                    View details
+                    <span aria-hidden>→</span>
+                  </Link>
                 </div>
               </div>
             </div>
           ))}
+          {products.length === 0 && (
+            <p className="text-slate-500">No products found.</p>
+          )}
         </div>
       </div>
     </div>

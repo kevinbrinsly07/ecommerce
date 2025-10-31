@@ -67,81 +67,65 @@ const Cart = () => {
     }
   };
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>🛒 Loading cart...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <p className="text-slate-500 text-sm flex items-center gap-2">🛒 Loading cart...</p>
+    </div>
+  );
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1>🛒 Shopping Cart</h1>
-      
-      {cart.items.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
-          <p>Your cart is empty 😢</p>
-          <Link to="/products" style={{ color: '#007bff', fontSize: '18px' }}>
-            👉 Start Shopping
-          </Link>
-        </div>
-      ) : (
-        <>
-          {cart.items.map((item) => (
-            <div
-              key={item.product._id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '20px',
-                border: '1px solid #ddd',
-                padding: '20px',
-                borderRadius: '10px',
-                marginBottom: '15px',
-                background: '#f9f9f9'
-              }}
-            >
-              <img
-                src={item.product.image || 'https://picsum.photos/100'}
-                alt={item.product.name}
-                style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
-              />
-              <div style={{ flex: 1 }}>
-                <h3>{item.product.name}</h3>
-                <p style={{ color: '#666' }}>{item.product.description}</p>
-                <p><strong>${item.product.price} × {item.quantity} = ${(item.product.price * item.quantity).toFixed(2)}</strong></p>
+    <div className="min-h-screen bg-slate-50 py-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          <span>🛒</span> Shopping Cart
+        </h1>
+        {cart.items.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
+            <p className="text-slate-500 mb-4">Your cart is empty 😢</p>
+            <Link to="/products" className="inline-flex items-center gap-1 text-indigo-500 font-medium hover:text-indigo-600">
+              👉 Start Shopping
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-4">
+              {cart.items.map((item) => (
+                <div key={item.product._id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white border border-slate-100 rounded-xl p-4 shadow-sm">
+                  <img src={item.product.image || 'https://picsum.photos/100'} alt={item.product.name} className="w-20 h-20 rounded-lg object-cover" />
+                  <div className="flex-1 space-y-1">
+                    <h3 className="text-base font-semibold text-slate-900">{item.product.name}</h3>
+                    <p className="text-sm text-slate-500 line-clamp-2">{item.product.description}</p>
+                    <p className="text-sm text-slate-700 font-medium">
+                      ${item.product.price} × {item.quantity} = <span className="text-slate-900 font-semibold">${(item.product.price * item.quantity).toFixed(2)}</span>
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => removeItem(item.product._id)}
+                    className="inline-flex items-center gap-1 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium px-3 py-2 rounded-lg transition"
+                  >
+                    ❌ Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-2xl shadow-sm p-5">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900">Total:</h2>
+                <p className="text-2xl font-bold text-slate-900 mt-1">
+                  ${cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toFixed(2)}
+                </p>
               </div>
               <button
-                onClick={() => removeItem(item.product._id)}
-                style={{
-                  background: '#ff4757',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 15px',
-                  borderRadius: '5px',
-                  cursor: 'pointer'
-                }}
+                onClick={checkout}
+                disabled={cart.items.length === 0}
+                className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition"
               >
-                ❌ Remove
+                🚀 Checkout Now
               </button>
             </div>
-          ))}
-          
-          <div style={{ textAlign: 'right', marginTop: '20px' }}>
-            <h2>Total: ${cart.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toFixed(2)}</h2>
-            <button
-              onClick={checkout}
-              disabled={cart.items.length === 0}
-              style={{
-                background: '#28a745',
-                color: 'white',
-                border: 'none',
-                padding: '15px 30px',
-                fontSize: '18px',
-                borderRadius: '10px',
-                cursor: 'pointer'
-              }}
-            >
-              🚀 Checkout Now
-            </button>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

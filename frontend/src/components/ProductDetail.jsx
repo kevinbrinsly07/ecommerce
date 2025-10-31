@@ -4,24 +4,6 @@ import axios from 'axios';
 import useAuth from '../hooks/useAuth';
 import { dispatchCartUpdate } from '../utils/cartEvents';
 
-const pageStyle = { minHeight: '100vh', background: '#f3f4f6', padding: '30px 16px', fontFamily: 'system-ui, -apple-system, sans-serif' };
-const containerStyle = { maxWidth: '1200px', margin: '0 auto' };
-const breadcrumb = { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '18px', fontSize: '0.9rem' };
-const crumbLink = { color: '#6366f1', textDecoration: 'none', fontWeight: 500 };
-const layoutStyle = { display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '28px' };
-const imageSection = { background: 'white', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(15,23,42,0.05)' };
-const mainImage = { width: '100%', height: '100%', maxHeight: '520px', objectFit: 'cover', display: 'block' };
-const infoSection = { background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px rgba(15,23,42,0.05)', alignSelf: 'flex-start', position: 'sticky', top: '24px' };
-const pill = { display: 'inline-block', background: 'rgba(99, 102, 241, 0.08)', color: '#4f46e5', fontWeight: 600, fontSize: '0.7rem', letterSpacing: '0.04em', textTransform: 'uppercase', padding: '5px 12px', borderRadius: '9999px', marginBottom: '14px' };
-const title = { fontSize: '2.1rem', fontWeight: 700, marginBottom: '12px', color: '#0f172a' };
-const desc = { color: '#6b7280', lineHeight: 1.6, marginBottom: '18px' };
-const priceWrap = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', gap: '12px' };
-const price = { fontSize: '2rem', fontWeight: 700, color: '#4f46e5' };
-const shipBadge = { background: 'rgba(16, 185, 129, 0.12)', color: '#059669', padding: '6px 12px', borderRadius: '9999px', fontSize: '0.65rem', fontWeight: 600 };
-const addBtnStyle = { width: '100%', padding: '14px 16px', border: 'none', borderRadius: '14px', background: 'linear-gradient(90deg,#6366f1,#8b5cf6)', color: 'white', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'opacity 0.2s ease' };
-const backLinkStyle = { display: 'inline-block', marginTop: '14px', color: '#4f46e5', textDecoration: 'none', fontWeight: 500 };
-const center = { textAlign: 'center', padding: '80px 20px', fontSize: '1.1rem' };
-
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -85,62 +67,54 @@ const ProductDetail = () => {
   // 3. Render
   // -----------------------------------------------------------------
   if (loading) {
-    return <div style={pageStyle}> <div style={center}>Loading product...</div> </div>;
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full border-2 border-slate-200 border-t-indigo-500 animate-spin" />
+      </div>
+    );
   }
 
   if (error || !product) {
     return (
-      <div style={pageStyle}>
-        <div style={center}>
-          <p style={{ color: '#e53e3e' }}>{error || 'Product not found'}</p>
-          <Link to="/products" style={backLinkStyle}>Back to products</Link>
-        </div>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-3 px-4">
+        <p className="text-rose-500 font-medium">{error || 'Product not found'}</p>
+        <Link to="/products" className="text-indigo-500 font-medium">Back to products</Link>
       </div>
     );
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={containerStyle}>
-        <div style={breadcrumb}>
-          <Link to="/products" style={crumbLink}>Products</Link>
-          <span style={{ color: '#9ca3af' }}>/</span>
-          <span style={{ color: '#111827', fontWeight: 500 }}>{product.name}</span>
+    <div className="min-h-screen bg-slate-50 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-2 text-sm text-slate-500 mb-5">
+          <Link to="/products" className="text-indigo-500 hover:text-indigo-600 font-medium">Products</Link>
+          <span>/</span>
+          <span className="text-slate-900 font-medium">{product.name}</span>
         </div>
-        <div style={layoutStyle}>
-          <div style={imageSection}>
-            <img src={product.image || 'https://picsum.photos/900/700'} alt={product.name} style={mainImage} />
+        <div className="grid lg:grid-cols-[1.15fr,0.85fr] gap-8 items-start">
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <img src={product.image || 'https://picsum.photos/900/700'} alt={product.name} className="w-full h-full max-h-[520px] object-cover" />
           </div>
-          <div style={infoSection}>
+          <div className="bg-white rounded-2xl shadow-sm p-6 lg:sticky lg:top-6">
             {product.category && (
-              <span style={pill}>{product.category}</span>
+              <span className="inline-flex items-center rounded-full bg-indigo-50 text-indigo-600 px-3 py-1 text-[0.65rem] font-semibold tracking-wide uppercase mb-4">{product.category}</span>
             )}
-            <h1 style={title}>{product.name}</h1>
-            <p style={desc}>{product.description || 'No description available.'}</p>
-            <div style={priceWrap}>
-              <span style={price}>${product.price.toFixed(2)}</span>
-              <span style={shipBadge}>Free shipping</span>
+            <h1 className="text-3xl font-bold text-slate-900 mb-3 leading-tight">{product.name}</h1>
+            <p className="text-slate-600 mb-5 leading-relaxed">{product.description || 'No description available.'}</p>
+            <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+              <span className="text-3xl font-bold text-indigo-600">${product.price.toFixed(2)}</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-3 py-1 text-xs font-semibold">Free shipping</span>
             </div>
-            <button
-              onClick={addToCart}
-              disabled={adding}
-              style={{
-                ...addBtnStyle,
-                opacity: adding ? 0.7 : 1,
-                cursor: adding ? 'not-allowed' : 'pointer'
-              }}
-            >
+            <button onClick={addToCart} disabled={adding} className={`w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 font-semibold shadow-md transition ${adding ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90'}`}>
               {adding ? (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <>
                   <Spinner /> Adding…
-                </span>
+                </>
               ) : (
                 'Add to Cart'
               )}
             </button>
-            <Link to="/products" style={backLinkStyle}>
-              Back to products
-            </Link>
+            <Link to="/products" className="inline-block mt-4 text-sm text-indigo-500 hover:text-indigo-600 font-medium">Back to products</Link>
           </div>
         </div>
       </div>
@@ -153,7 +127,7 @@ const ProductDetail = () => {
    -------------------------------------------------------------- */
 const Spinner = () => (
   <svg
-    style={{ width: '18px', height: '18px' }}
+    className="w-4 h-4"
     viewBox="0 0 38 38"
     xmlns="http://www.w3.org/2000/svg"
     stroke="white"
