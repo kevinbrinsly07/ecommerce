@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
 const Login = () => {
@@ -11,7 +11,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +42,7 @@ const Login = () => {
     setLoading(true);
     try {
       await login(formData.username, formData.password);
-      navigate('/');
+      window.location.href = '/';
     } catch (err) {
       const msg = err.response?.data?.message || 'Invalid username or password';
       setErrors({ submit: msg });

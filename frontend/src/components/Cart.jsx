@@ -48,6 +48,7 @@ const Cart = () => {
         ...prev,
         items: prev.items.filter(i => i.product._id !== productId)
       }));
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }

@@ -6,29 +6,22 @@ import axios from 'axios';
 const Navbar = () => {
   const { token, logout } = useAuth();
   const navigate = useNavigate();
-
   const [cartCount, setCartCount] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // Fetch cart count on mount & when token changes
   useEffect(() => {
-    const fetchCartCount = async () => {
-      if (!token) {
-        setCartCount(0);
-        return;
-      }
+    const fetchCart = async () => {
+      if (!token) { setCartCount(0); return; }
       try {
-        const res = await axios.get('http://localhost:5000/api/cart', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await axios.get('http://localhost:5000/api/cart', { headers: { Authorization: `Bearer ${token}` } });
         const count = res.data.items.reduce((sum, item) => sum + item.quantity, 0);
         setCartCount(count);
       } catch (err) {
         console.error('Failed to load cart count', err);
       }
     };
-    fetchCartCount();
+    fetchCart();
   }, [token]);
 
   const handleLogout = () => {
@@ -38,247 +31,82 @@ const Navbar = () => {
   };
 
   return (
-    <header style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-      backdropFilter: 'blur(12px)',
-      background: 'rgba(255, 255, 255, 0.85)',
-      borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
-      <nav style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        padding: '0 1rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '70px'
-      }}>
-        {/* Logo */}
-        <Link
-          to="/"
-          style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textDecoration: 'none'
-          }}
-        >
-          ShopHub
-        </Link>
-
-        {/* Desktop Links */}
-        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }} className="hidden md:flex">
-          <Link to="/" style={navLinkStyle}>Home</Link>
-          <Link to="/products" style={navLinkStyle}>Products</Link>
-          <Link to="/cart" style={{ ...navLinkStyle, position: 'relative' }}>
-            Cart
-            {cartCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-8px',
-                right: '-12px',
-                background: '#ff4757',
-                color: 'white',
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-                minWidth: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '0 6px'
-              }}>
-                {cartCount}
-              </span>
-            )}
-          </Link>
-
-          {token ? (
-            <div style={{ position: 'relative' }}>
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => e.target.style.background = 'rgba(0,0,0,0.05)'}
-                onMouseLeave={(e) => e.target.style.background = 'transparent'}
-              >
-                <div style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: '#ddd',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  color: '#555'
-                }}>
-                  U
-                </div>
-                <span style={{ fontSize: '14px' }}>Account</span>
-              </button>
-
-              {isProfileOpen && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  width: '200px',
-                  background: 'white',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-                  marginTop: '8px',
-                  overflow: 'hidden',
-                  animation: 'fadeIn 0.2s ease'
-                }}>
-                  <Link
-                    to="/orders"
-                    style={dropdownItemStyle}
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    My Orders
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      ...dropdownItemStyle,
-                      width: '100%',
-                      textAlign: 'left',
-                      color: '#e74c3c',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link to="/login" style={navLinkStyle}>Login</Link>
-              <Link
-                to="/register"
-                style={{
-                  ...navLinkStyle,
-                  background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  fontWeight: '500'
-                }}
-              >
-                Sign Up
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+      <nav className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="text-2xl font-bold bg-linear-to-r from-blue-800 to-sky-500 bg-clip-text text-transparent">Ebucket</Link>
+            <div className="hidden md:flex items-center gap-6">
+              <Link to="/" className="text-slate-700 hover:text-slate-900 text-sm font-medium">Home</Link>
+              <Link to="/products" className="text-slate-700 hover:text-slate-900 text-sm font-medium">Products</Link>
+              <Link to="/cart" className="relative text-slate-700 hover:text-slate-900 text-sm font-medium">
+                Cart
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-rose-500 text-white text-xs font-semibold min-w-5 h-5 rounded-full flex items-center justify-center px-1">{cartCount}</span>
+                )}
               </Link>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          style={{
-            display: 'none',
-            background: 'transparent',
-            border: 'none',
-            fontSize: '1.5rem',
-            cursor: 'pointer'
-          }}
-          className="md:hidden"
-        >
-          {isMobileMenuOpen ? 'Close' : 'Menu'}
-        </button>
+          {/* Right section */}
+          <div className="hidden md:flex items-center gap-4">
+            {token ? (
+              <div className="relative">
+                <button onClick={() => setIsProfileOpen((prev) => !prev)} className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-slate-100 transition">
+                  <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-semibold text-sm">U</div>
+                  <span className="text-sm">Account</span>
+                  <svg className="w-4 h-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.086l3.71-3.855a.75.75 0 111.08 1.04l-4.25 4.417a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" /></svg>
+                </button>
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white shadow-lg ring-1 ring-black/5 py-1">
+                    <Link to="/orders" onClick={() => setIsProfileOpen(false)} className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My Orders</Link>
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-slate-50">Logout</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link to="/login" className="text-sm font-medium text-slate-700 hover:text-slate-900">Login</Link>
+                <Link to="/register" className="inline-flex items-center rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90">Sign Up</Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile button */}
+          <button onClick={() => setIsMobileOpen((prev) => !prev)} className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <span className="sr-only">Open main menu</span>
+            {isMobileOpen ? (
+              <svg className="h-6 w-6" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            ) : (
+              <svg className="h-6 w-6" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            )}
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div style={{
-          background: 'white',
-          borderTop: '1px solid #eee',
-          padding: '1rem',
-          animation: 'slideDown 0.3s ease'
-        }} className="md:hidden">
-          <Link to="/" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-          <Link to="/products" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>Products</Link>
-          <Link to="/cart" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>
-            Cart {cartCount > 0 && <span style={{ color: '#ff4757' }}>({cartCount})</span>}
-          </Link>
-          {token ? (
-            <>
-              <Link to="/orders" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
-              <button onClick={handleLogout} style={mobileLinkStyle}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-              <Link to="/register" style={mobileLinkStyle} onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
-            </>
-          )}
+      {/* Mobile menu */}
+      {isMobileOpen && (
+        <div className="md:hidden bg-white/95 backdrop-blur border-b border-slate-200">
+          <div className="space-y-1 px-4 pt-2 pb-3">
+            <Link to="/" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">Home</Link>
+            <Link to="/products" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">Products</Link>
+            <Link to="/cart" onClick={() => setIsMobileOpen(false)} className="relative block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">Cart {cartCount > 0 && <span className="ml-1 text-rose-500 font-semibold">({cartCount})</span>}</Link>
+            {token ? (
+              <>
+                <Link to="/orders" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">My Orders</Link>
+                <button onClick={handleLogout} className="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-rose-500 hover:bg-slate-100">Logout</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100">Login</Link>
+                <Link to="/register" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90">Sign Up</Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </header>
   );
 };
-
-// Reusable styles
-const navLinkStyle = {
-  textDecoration: 'none',
-  color: '#333',
-  fontWeight: '500',
-  fontSize: '1rem',
-  padding: '8px 0',
-  position: 'relative',
-  transition: 'color 0.2s'
-};
-
-const dropdownItemStyle = {
-  display: 'block',
-  padding: '12px 16px',
-  background: 'transparent',
-  border: 'none',
-  width: '100%',
-  textAlign: 'left',
-  cursor: 'pointer',
-  fontSize: '14px',
-  color: '#333',
-  transition: 'background 0.2s'
-};
-
-const mobileLinkStyle = {
-  display: 'block',
-  padding: '12px 0',
-  color: '#333',
-  textDecoration: 'none',
-  fontSize: '1.1rem',
-  borderBottom: '1px solid #eee'
-};
-
-// Add animations
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes slideDown {
-    from { opacity: 0; height: 0; }
-    to { opacity: 1; height: auto; }
-  }
-`;
-document.head.appendChild(style);
 
 export default Navbar;
