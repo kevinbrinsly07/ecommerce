@@ -52,17 +52,17 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
-      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-8 sm:p-10">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-8">
+      <div className="relative w-full max-w-md bg-slate-900/40 border border-slate-800 backdrop-blur rounded-2xl shadow-xl p-8 sm:p-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-linear-to-r from-blue-800 to-sky-500 bg-clip-text text-transparent">EBucket</h1>
-          <p className="text-slate-500 mt-1 text-sm">Welcome back! Please login</p>
+          <h1 className="text-3xl font-bold bg-linear-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_6px_25px_rgba(34,211,238,0.35)]">EBucket</h1>
+          <p className="text-slate-400 mt-1 text-sm">Welcome back! Please login</p>
         </div>
 
         {/* Error message */}
         {errors.submit && (
-          <div className="mb-5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600 flex items-center gap-2">
+          <div className="mb-5 rounded-lg border border-rose-700/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-300 flex items-center gap-2">
             <span className="text-lg">⚠️</span> {errors.submit}
           </div>
         )}
@@ -70,7 +70,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Username */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Username</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Username</label>
             <input
               type="text"
               name="username"
@@ -78,14 +78,14 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your username"
               disabled={loading}
-              className={`w-full rounded-xl border px-3 py-2.5 text-sm shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 ${errors.username ? 'border-rose-300' : 'border-slate-200'} ${loading ? 'bg-slate-50 cursor-not-allowed' : 'bg-white'}`}
+              className={`w-full rounded-xl border px-3 py-2.5 text-sm shadow-sm outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-500 ${errors.username ? 'border-rose-500/40' : 'border-slate-800'} ${loading ? 'bg-slate-900/30 cursor-not-allowed' : 'bg-slate-900/40'} text-slate-100`}
             />
             {errors.username && <p className="mt-1 text-xs text-rose-500 font-medium">{errors.username}</p>}
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -94,12 +94,12 @@ const Login = () => {
                 onChange={handleChange}
                 placeholder="Enter your password"
                 disabled={loading}
-                className={`w-full rounded-xl border px-3 py-2.5 text-sm shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 ${errors.password ? 'border-rose-300' : 'border-slate-200'} ${loading ? 'bg-slate-50 cursor-not-allowed' : 'bg-white'}`}
+                className={`w-full rounded-xl border px-3 py-2.5 text-sm shadow-sm outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 placeholder:text-slate-500 ${errors.password ? 'border-rose-500/40' : 'border-slate-800'} ${loading ? 'bg-slate-900/30 cursor-not-allowed' : 'bg-slate-900/40'} text-slate-100`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm hover:text-slate-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm hover:text-slate-200"
                 tabIndex="-1"
               >
                 {showPassword ? 'Hide' : 'Show'}
@@ -111,10 +111,10 @@ const Login = () => {
           {/* Remember me / Forgot */}
           <div className="flex justify-between items-center text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded" />
-              <span>Remember me</span>
+              <input type="checkbox" className="w-4 h-4 text-cyan-500 rounded bg-slate-900 border-slate-700" />
+              <span className="text-slate-300">Remember me</span>
             </label>
-            <Link to="/forgot-password" className="text-blue-400 hover:text-blue-600 font-medium">
+            <Link to="/forgot-password" className="text-cyan-400 hover:text-cyan-300 font-medium">
               Forgot password?
             </Link>
           </div>
@@ -123,7 +123,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-800 to-sky-500 py-2.5 text-sm font-semibold text-white shadow-md transition hover:opacity-95 ${loading ? 'opacity-80 cursor-not-allowed' : ''}`}
+            className={`w-full inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-cyan-400 to-sky-500 py-2.5 text-sm font-semibold text-slate-950 shadow-md shadow-cyan-500/20 transition hover:opacity-95 ${loading ? 'opacity-80 cursor-not-allowed' : ''}`}
           >
             {loading ? (<><Spinner /> Signing In...</>) : 'Sign In'}
           </button>
@@ -131,9 +131,9 @@ const Login = () => {
 
         {/* Divider */}
         <div className="flex items-center my-6 text-slate-400 text-sm">
-          <div className="flex-1 h-px bg-slate-200"></div>
+          <div className="flex-1 h-px bg-slate-800"></div>
           <span className="px-3">OR</span>
-          <div className="flex-1 h-px bg-slate-200"></div>
+          <div className="flex-1 h-px bg-slate-800"></div>
         </div>
 
         {/* Social buttons */}
@@ -142,9 +142,9 @@ const Login = () => {
           <button className="flex-1 flex items-center justify-center gap-2 bg-[#1877f2] text-white py-2.5 rounded-xl text-sm font-medium shadow hover:opacity-90 transition"><span className="text-lg">f</span> Facebook</button>
         </div>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
+        <p className="text-center text-sm text-slate-400 mt-6">
           Don’t have an account?{' '}
-          <Link to="/register" className="text-blue-400 font-medium hover:text-blue-600">
+          <Link to="/register" className="text-cyan-400 font-medium hover:text-cyan-300">
             Sign up
           </Link>
         </p>
@@ -155,7 +155,7 @@ const Login = () => {
 
 // Spinner Component
 const Spinner = () => (
-  <svg className="w-5 h-5" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="white">
+  <svg className="w-5 h-5" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
     <g fill="none" fillRule="evenodd">
       <g transform="translate(1 1)" strokeWidth="3">
         <circle strokeOpacity=".5" cx="18" cy="18" r="18" />

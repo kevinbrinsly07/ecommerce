@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import useAuth from '../hooks/useAuth';
 import { dispatchCartUpdate } from '../utils/cartEvents';
+import placeholder from '../assets/placeholder.jpg';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -36,6 +37,14 @@ const ProductDetail = () => {
     return () => controller.abort();
   }, [id]);
 
+  const getImageSrc = (img) => {
+    if (!img) return placeholder;
+    if (img.includes('via.placeholder.com')) return placeholder;
+    if (img.includes('picsum.photos')) return placeholder;
+    if (img.startsWith('http') || img.startsWith('/')) return img;
+    return placeholder;
+  };
+
   // -----------------------------------------------------------------
   // 2. Add to cart
   // -----------------------------------------------------------------
@@ -68,44 +77,44 @@ const ProductDetail = () => {
   // -----------------------------------------------------------------
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="h-10 w-10 rounded-full border-2 border-slate-200 border-t-indigo-500 animate-spin" />
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full border-2 border-slate-700 border-t-slate-200 animate-spin" />
       </div>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-3 px-4">
-        <p className="text-rose-500 font-medium">{error || 'Product not found'}</p>
-        <Link to="/products" className="text-indigo-500 font-medium">Back to products</Link>
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center gap-3 px-4">
+        <p className="text-rose-400 font-medium">{error || 'Product not found'}</p>
+        <Link to="/products" className="text-cyan-400 font-medium hover:text-cyan-300">Back to products</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 text-sm text-slate-500 mb-5">
-          <Link to="/products" className="text-indigo-500 hover:text-indigo-600 font-medium">Products</Link>
+        <div className="flex items-center gap-2 text-sm text-slate-400 mb-5">
+          <Link to="/products" className="text-cyan-400 hover:text-cyan-300 font-medium">Products</Link>
           <span>/</span>
-          <span className="text-slate-900 font-medium">{product.name}</span>
+          <span className="text-slate-200 font-medium">{product.name}</span>
         </div>
         <div className="grid lg:grid-cols-[1.15fr,0.85fr] gap-8 items-start">
-          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <img src={product.image || 'https://picsum.photos/900/700'} alt={product.name} className="w-full h-full max-h-[520px] object-cover" />
+          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+            <img src={getImageSrc(product.image)} alt={product.name} className="w-full h-full max-h-[520px] object-cover" />
           </div>
-          <div className="bg-white rounded-2xl shadow-sm p-6 lg:sticky lg:top-6">
+          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl shadow-sm p-6 lg:sticky lg:top-6 backdrop-blur">
             {product.category && (
-              <span className="inline-flex items-center rounded-full bg-indigo-50 text-indigo-600 px-3 py-1 text-[0.65rem] font-semibold tracking-wide uppercase mb-4">{product.category}</span>
+              <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-950 px-3 py-1 text-[0.65rem] font-semibold tracking-wide uppercase mb-4">{product.category}</span>
             )}
-            <h1 className="text-3xl font-bold text-slate-900 mb-3 leading-tight">{product.name}</h1>
-            <p className="text-slate-600 mb-5 leading-relaxed">{product.description || 'No description available.'}</p>
+            <h1 className="text-3xl font-bold text-white mb-3 leading-tight">{product.name}</h1>
+            <p className="text-slate-300 mb-5 leading-relaxed">{product.description || 'No description available.'}</p>
             <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-              <span className="text-3xl font-bold text-indigo-600">${product.price.toFixed(2)}</span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-600 px-3 py-1 text-xs font-semibold">Free shipping</span>
+              <span className="text-3xl font-bold text-slate-50">${product.price.toFixed(2)}</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/15 text-emerald-300 border border-emerald-500/30 px-3 py-1 text-xs font-semibold">Free shipping</span>
             </div>
-            <button onClick={addToCart} disabled={adding} className={`w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 font-semibold shadow-md transition ${adding ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90'}`}>
+            <button onClick={addToCart} disabled={adding} className={`w-full inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-cyan-400 to-sky-500 text-slate-950 py-3 font-semibold shadow-md shadow-cyan-500/20 transition ${adding ? 'opacity-70 cursor-not-allowed' : 'hover:opacity-90'}`}>
               {adding ? (
                 <>
                   <Spinner /> Adding…
@@ -114,7 +123,7 @@ const ProductDetail = () => {
                 'Add to Cart'
               )}
             </button>
-            <Link to="/products" className="inline-block mt-4 text-sm text-indigo-500 hover:text-indigo-600 font-medium">Back to products</Link>
+            <Link to="/products" className="inline-block mt-4 text-sm text-cyan-400 hover:text-cyan-300 font-medium">Back to products</Link>
           </div>
         </div>
       </div>
