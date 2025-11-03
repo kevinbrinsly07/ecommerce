@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import placeholder from '../assets/placeholder.jpg';
+import placeholder from '../assets/placeholder.png';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 
 const Cart = () => {
@@ -59,6 +59,7 @@ const Cart = () => {
         ...prev,
         items: prev.items.filter(i => i.product._id !== productId)
       }));
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -70,8 +71,8 @@ const Cart = () => {
       await axios.post('http://localhost:5000/api/orders/checkout', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('✅ Order placed! Cart cleared.');
       setCart({ items: [] });
+      window.location.href = '/orders';
     } catch (err) {
       alert('❌ ' + (err.response?.data?.message || 'Checkout failed'));
     }

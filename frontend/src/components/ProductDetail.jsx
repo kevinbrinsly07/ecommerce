@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import useAuth from '../hooks/useAuth';
 import { dispatchCartUpdate } from '../utils/cartEvents';
-import placeholder from '../assets/placeholder.jpg';
+import placeholder from '../assets/placeholder.png';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -63,8 +63,7 @@ const ProductDetail = () => {
       );
       // ---- fire global event → navbar updates instantly ----
       dispatchCartUpdate();
-      alert('Added to cart!');
-      window.location.reload();
+      window.location.href = '/cart';
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to add to cart');
     } finally {

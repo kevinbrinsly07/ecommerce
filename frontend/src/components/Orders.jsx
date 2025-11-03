@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import placeholder from '../assets/placeholder.jpg';
+import placeholder from '../assets/placeholder.png';
 import { FiPackage } from 'react-icons/fi';
 
 const Orders = () => {
