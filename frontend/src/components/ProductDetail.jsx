@@ -101,7 +101,12 @@ const ProductDetail = () => {
         </div>
         <div className="grid lg:grid-cols-[1.15fr,0.85fr] gap-8 items-start">
           <div className="bg-slate-900/40 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
-            <img src={getImageSrc(product.image)} alt={product.name} className="w-full h-full max-h-[520px] object-cover" />
+            <img
+              src={getImageSrc(product.image)}
+              alt={product.name}
+              className="w-full h-full max-h-[520px] object-cover"
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = placeholder; }}
+            />
           </div>
           <div className="bg-slate-900/40 border border-slate-800 rounded-2xl shadow-sm p-6 lg:sticky lg:top-6 backdrop-blur">
             {product.category && (
@@ -123,6 +128,56 @@ const ProductDetail = () => {
               )}
             </button>
             <Link to="/products" className="inline-block mt-4 text-sm text-cyan-400 hover:text-cyan-300 font-medium">Back to products</Link>
+          </div>
+        </div>
+        {/* Specifications */}
+        <div className="mt-8 bg-slate-900/40 border border-slate-800 rounded-2xl shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Specifications</h2>
+          <div className="grid sm:grid-cols-2 gap-x-8">
+            <dl className="space-y-3 text-sm">
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Category</dt>
+                <dd className="text-slate-200">{product.category || 'General'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Brand</dt>
+                <dd className="text-slate-200">{product.brand || '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">SKU</dt>
+                <dd className="text-slate-200">{product.sku || '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Stock</dt>
+                <dd className="text-slate-200">{product.stock ?? '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Weight</dt>
+                <dd className="text-slate-200">{product.weight || '—'}</dd>
+              </div>
+            </dl>
+            <dl className="space-y-3 text-sm">
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Dimensions</dt>
+                <dd className="text-slate-200">{product.dimensions || '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Warranty</dt>
+                <dd className="text-slate-200">{product.warranty || '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Origin</dt>
+                <dd className="text-slate-200">{product.origin || '—'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Shipping</dt>
+                <dd className="text-slate-200">{product.shipping || 'Free'}</dd>
+              </div>
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <dt className="text-slate-400">Returns</dt>
+                <dd className="text-slate-200">{product.returns || '30 days'}</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>

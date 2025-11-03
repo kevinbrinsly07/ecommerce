@@ -204,7 +204,7 @@ const Products = () => {
             </div>
           </div>
         </div>
-        <header className="sticky top-26 z-30 bg-slate-950 border-y border-slate-900/40 rounded-xl mb-8">
+        <header className="sticky top-26 z-30 bg-slate-950 border-y border-slate-900/40 rounded-b-xl mb-8">
           <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">

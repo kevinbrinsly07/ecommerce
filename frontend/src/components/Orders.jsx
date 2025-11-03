@@ -92,17 +92,38 @@ const Orders = () => {
               <div>
                 <h3 className="text-sm font-semibold text-slate-100 mb-3">Items</h3>
                 <ul className="divide-y divide-slate-800/60">
-                  {order.items.map((item) => (
-                    <li key={item._id} className="flex items-center gap-4 py-3">
-                      <img src={getImageSrc(item.product.image)} alt={item.product.name} className="w-14 h-14 rounded-lg object-cover bg-slate-800" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-slate-100">{item.product.name}</p>
-                        <p className="text-xs text-slate-400 mt-1">
-                          ${item.price} × {item.quantity} = <span className="text-slate-100 font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
-                        </p>
-                      </div>
-                    </li>
-                  ))}
+                  {order.items.map((item) => {
+                    const prod = item.product || {};
+                    const name = prod.name || 'Product unavailable';
+                    const imgSrc = getImageSrc(prod.image);
+                    const priceNum = Number(item.price || 0);
+                    const qtyNum = Number(item.quantity || 0);
+                    const lineTotal = (priceNum * qtyNum).toFixed(2);
+                    const isUnavailable = !item.product;
+
+                    return (
+                      <li key={item._id} className={`flex items-center gap-4 py-3 ${isUnavailable ? 'opacity-70' : ''}`}>
+                        <img
+                          src={imgSrc}
+                          alt={name}
+                          className="w-14 h-14 rounded-lg object-cover bg-slate-800"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = placeholder;
+                          }}
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-slate-100">
+                            {name}
+                            {isUnavailable && <span className="ml-2 text-xs text-slate-400">(removed)</span>}
+                          </p>
+                          <p className="text-xs text-slate-400 mt-1">
+                            ${priceNum.toFixed(2)} × {qtyNum} = <span className="text-slate-100 font-semibold">${lineTotal}</span>
+                          </p>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
               <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-end">
