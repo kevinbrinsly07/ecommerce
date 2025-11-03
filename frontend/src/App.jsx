@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Orders from './components/Orders';
 import Navbar from './components/Navbar';
+import Admin from './components/Admin';
 
 function App() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </>
   );

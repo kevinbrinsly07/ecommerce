@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Correct import
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const useAuth = () => {
@@ -32,20 +31,41 @@ const useAuth = () => {
     setToken(null);
   };
 
-  const getUserId = () => {
-    if (!token) return null;
+  // small JWT payload decoder (browser). Avoids external jwt-decode import.
+  const decodeJwt = (t) => {
+    if (!t) return null;
     try {
-      const decoded = jwtDecode(token);
-      return decoded.id;
+      const payload = t.split('.')[1];
+      if (!payload) return null;
+      // base64url -> base64
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      // atob -> percent-encoding -> decodeURIComponent for unicode safety
+      const json = decodeURIComponent(Array.prototype.map.call(atob(base64), (c) => '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      return JSON.parse(json);
     } catch (err) {
-      console.error('Invalid token', err);
+      console.error('Failed to decode token', err);
       return null;
     }
   };
 
-  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  const getUserId = () => {
+    const decoded = decodeJwt(token);
+    return decoded?.id || null;
+  };
 
-  return { token, login, register, logout, getUserId, config };
+  const getUser = () => decodeJwt(token);
+
+  const getUserRole = () => {
+    const user = getUser();
+    return user?.role || null;
+  };
+
+  // Memoize config so it doesn't change on every render
+  const config = React.useMemo(() => (
+    token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+  ), [token]);
+
+  return { token, login, register, logout, getUserId, getUser, getUserRole, config };
 };
 
 export default useAuth;

@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { checkout, getOrders } = require('../controllers/orderController');
-const { authenticateToken } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
-router.use(authenticateToken);
+router.use(auth);
 router.post('/checkout', checkout);
 router.get('/', getOrders);
 

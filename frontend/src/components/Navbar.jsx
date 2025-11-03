@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 
 const Navbar = () => {
-  const { token, logout } = useAuth();
+  const { token, logout, getUserRole } = useAuth();
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -42,6 +42,9 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-6">
               {/* <Link to="/" className="text-slate-200 hover:text-white text-sm font-medium transition rounded-md px-2 py-1 hover:bg-slate-900/40">Home</Link> */}
               <Link to="/products" className="text-slate-200 hover:text-white text-sm font-bold transition rounded-md px-2 py-1 hover:bg-slate-900/40">Products</Link>
+              {getUserRole() === 'admin' && (
+                <Link to="/admin" className="text-slate-200 hover:text-white text-sm font-bold transition rounded-md px-2 py-1 hover:bg-slate-900/40">Admin</Link>
+              )}
               <Link to="/cart" className="relative text-slate-200 hover:text-white text-sm font-bold transition rounded-md px-2 py-1 hover:bg-slate-900/40">
                 Cart
                 {cartCount > 0 && (
@@ -99,6 +102,9 @@ const Navbar = () => {
           <div className="space-y-1 px-4 pt-2 pb-3">
             <Link to="/" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-bold text-slate-100 hover:bg-slate-900/50">Home</Link>
             <Link to="/products" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-bold text-slate-100 hover:bg-slate-900/50">Products</Link>
+              {getUserRole() === 'admin' && (
+                <Link to="/admin" onClick={() => setIsMobileOpen(false)} className="block rounded-md px-3 py-2 text-base font-bold text-slate-100 hover:bg-slate-900/50">Admin</Link>
+              )}
             <Link to="/cart" onClick={() => setIsMobileOpen(false)} className="relative block rounded-md px-3 py-2 text-base font-bold text-slate-100 hover:bg-slate-900/50">Cart {cartCount > 0 && <span className="ml-1 text-cyan-400 font-bold">({cartCount})</span>}</Link>
             {token ? (
               <>
