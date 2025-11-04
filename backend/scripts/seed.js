@@ -18,7 +18,7 @@ async function seedProducts() {
       currency: 'USD',
       stock: 24,
       featured: true,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       images: ['/images/products/aurora-1.jpg', '/images/products/aurora-2.jpg'],
       highlights: ['Active noise cancellation', 'Comfort fit', 'Fast charging'],
       attributes: [
@@ -38,7 +38,7 @@ async function seedProducts() {
       price: 199.0,
       salePrice: 169.0,
       stock: 40,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['AMOLED Display', 'Water Resistant 5ATM', 'Heart Rate Monitor'],
       attributes: [
         { key: 'Battery Life', value: '7 days' },
@@ -56,7 +56,7 @@ async function seedProducts() {
       sku: 'VTX-KB-087',
       price: 129.0,
       stock: 15,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['RGB Backlight', 'Hot-swappable keys', 'PBT keycaps'],
       attributes: [
         { key: 'Layout', value: 'TKL (87 keys)' },
@@ -75,7 +75,7 @@ async function seedProducts() {
       price: 119.0,
       salePrice: 99.0,
       stock: 33,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['Shock Resistant', 'Aluminum Body', 'USB-C 3.2 Gen 2'],
       ratingAverage: 4.8,
       ratingCount: 230,
@@ -89,7 +89,7 @@ async function seedProducts() {
       sku: 'TRA-BT-1L',
       price: 24.0,
       stock: 120,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['Leak-proof cap', 'BPA-Free', 'Powder-coated finish'],
       ratingAverage: 4.2,
       ratingCount: 300,
@@ -105,7 +105,7 @@ async function seedProducts() {
       price: 599.0,
       salePrice: 529.0,
       stock: 18,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['4K UHD Display', 'HDR10+', 'Dolby Audio', 'Smart Remote'],
       attributes: [
         { key: 'Screen Size', value: '55 inch' },
@@ -124,7 +124,7 @@ async function seedProducts() {
       price: 299.0,
       salePrice: 259.0,
       stock: 22,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['4K Camera', 'GPS Return Home', 'Foldable Design'],
       attributes: [
         { key: 'Battery Life', value: '40 min' },
@@ -143,7 +143,7 @@ async function seedProducts() {
       price: 49.99,
       salePrice: 39.99,
       stock: 75,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['16000 DPI Sensor', 'RGB Lighting', 'Adjustable Weight'],
       attributes: [
         { key: 'Connection', value: 'Wired USB' },
@@ -162,7 +162,7 @@ async function seedProducts() {
       price: 59.99,
       salePrice: 49.99,
       stock: 90,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['IPX7 Waterproof', '20-hour Playtime', 'Deep Bass'],
       attributes: [
         { key: 'Bluetooth Version', value: '5.1' },
@@ -181,7 +181,7 @@ async function seedProducts() {
       price: 39.99,
       salePrice: 34.99,
       stock: 150,
-      image: '../images/placeholder.png',
+  image: '/images/placeholder.png',
       highlights: ['Water Resistant', 'USB Charging Port', 'Ergonomic Straps'],
       attributes: [
         { key: 'Capacity', value: '25L' },

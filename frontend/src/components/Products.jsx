@@ -91,16 +91,12 @@ const Products = () => {
   );
 
   const getImageSrc = (img) => {
-    // no image at all → use local
     if (!img) return placeholder;
-
-    // ignore old seeded placeholder host
     if (img.includes("via.placeholder.com")) return placeholder;
-
-    // backend/static or real remote URL
-    if (img.startsWith("http") || img.startsWith("/")) return img;
-
-    // anything else → fallback
+    if (img.includes("picsum.photos")) return placeholder;
+    if (img.startsWith("http")) return img;
+    if (img.startsWith("/images/")) return `http://localhost:5000${img}`;
+    if (img.startsWith("/")) return img;
     return placeholder;
   };
 

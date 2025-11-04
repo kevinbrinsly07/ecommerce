@@ -143,33 +143,33 @@ const ProductDetail = () => {
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Brand</dt>
-                <dd className="text-slate-200">{product.brand || '—'}</dd>
+                <dd className="text-slate-200">{product.brand !== undefined && product.brand !== '' ? product.brand : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">SKU</dt>
-                <dd className="text-slate-200">{product.sku || '—'}</dd>
+                <dd className="text-slate-200">{product.sku !== undefined && product.sku !== '' ? product.sku : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Stock</dt>
-                <dd className="text-slate-200">{product.stock ?? '—'}</dd>
+                <dd className="text-slate-200">{(product.stock !== undefined && product.stock !== null) ? product.stock : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Weight</dt>
-                <dd className="text-slate-200">{product.weight || '—'}</dd>
+                <dd className="text-slate-200">{product.weight !== undefined && product.weight !== '' ? product.weight : '—'}</dd>
               </div>
             </dl>
             <dl className="space-y-3 text-sm">
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Dimensions</dt>
-                <dd className="text-slate-200">{product.dimensions || '—'}</dd>
+                <dd className="text-slate-200">{product.dimensions !== undefined && product.dimensions !== '' ? product.dimensions : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Warranty</dt>
-                <dd className="text-slate-200">{product.warranty || '—'}</dd>
+                <dd className="text-slate-200">{product.warranty !== undefined && product.warranty !== '' ? product.warranty : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Origin</dt>
-                <dd className="text-slate-200">{product.origin || '—'}</dd>
+                <dd className="text-slate-200">{product.origin !== undefined && product.origin !== '' ? product.origin : '—'}</dd>
               </div>
               <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
                 <dt className="text-slate-400">Shipping</dt>

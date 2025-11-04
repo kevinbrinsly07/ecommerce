@@ -5,6 +5,8 @@ import placeholder from '../assets/placeholder.png';
 import { FiTrash2, FiShoppingCart } from 'react-icons/fi';
 
 const Cart = () => {
+  const [payLoading, setPayLoading] = useState(false);
+  const [payError, setPayError] = useState(null);
   const [cart, setCart] = useState({ items: [] });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -44,7 +46,9 @@ const Cart = () => {
     if (typeof img !== 'string') return placeholder;
     if (img.includes('via.placeholder.com')) return placeholder;
     if (img.includes('picsum.photos')) return placeholder;
-    if (img.startsWith('http') || img.startsWith('/')) return img;
+    if (img.startsWith('http')) return img;
+    if (img.startsWith('/images/')) return `http://localhost:5000${img}`;
+    if (img.startsWith('/')) return img;
     return placeholder;
   };
 
@@ -66,17 +70,33 @@ const Cart = () => {
   };
 
   const checkout = async () => {
+    setPayLoading(true);
+    setPayError(null);
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:5000/api/orders/checkout', {}, {
+      // Call backend to create Stripe session
+      const res = await axios.post('http://localhost:5000/api/admin/stripe/checkout', {
+        items: cart.items
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Clear cart after initiating checkout
+      await axios.post('http://localhost:5000/api/cart/clear', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCart({ items: [] });
-      window.location.href = '/orders';
+
+      // Redirect to Stripe Checkout
+      window.location.href = res.data.url;
     } catch (err) {
-      alert('❌ ' + (err.response?.data?.message || 'Checkout failed'));
+      setPayError(err.response?.data?.message || 'Checkout failed');
+    } finally {
+      setPayLoading(false);
     }
   };
+
+  // Payment gateway handler
 
   if (loading) return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
@@ -128,12 +148,13 @@ const Cart = () => {
               </div>
               <button
                 onClick={checkout}
-                disabled={cart.items.length === 0}
+                disabled={cart.items.length === 0 || payLoading}
                 className="inline-flex items-center gap-2 bg-linear-to-r from-cyan-400 to-sky-500 text-slate-950 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed font-semibold px-6 py-3 rounded-xl shadow-md shadow-cyan-500/20 transition"
               >
-                🚀 Checkout Now
+                {payLoading ? 'Processing...' : '🚀 Checkout Now'}
               </button>
             </div>
+            {payError && <div className="text-red-400 bg-red-900/40 p-2 rounded mb-2 border border-red-700">{payError}</div>}
           </>
         )}
       </div>

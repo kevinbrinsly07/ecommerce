@@ -42,7 +42,9 @@ const Orders = () => {
     if (typeof img !== 'string') return placeholder;
     if (img.includes('via.placeholder.com')) return placeholder;
     if (img.includes('picsum.photos')) return placeholder;
-    if (img.startsWith('http') || img.startsWith('/')) return img;
+    if (img.startsWith('http')) return img;
+    if (img.startsWith('/images/')) return `http://localhost:5000${img}`;
+    if (img.startsWith('/')) return img;
     return placeholder;
   };
 
