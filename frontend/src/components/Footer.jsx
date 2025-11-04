@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         {/* Brand */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-3">EBucket</h2>
+          <h2 className="text-2xl font-bold text-amber-400 mb-3">EBucket</h2>
           <p className="text-sm text-slate-400 mb-4">
             Curated products for modern living. Shop the latest fashion, gadgets, and home goods — all in one place.
           </p>
@@ -64,7 +64,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-slate-800 mt-10 pt-6 text-center text-sm text-slate-500">
-        © {new Date().getFullYear()} EBucket. All rights reserved.
+        © {new Date().getFullYear()} <span className="text-amber-400">EBucket</span>. All rights reserved.
       </div>
     </footer>
   );

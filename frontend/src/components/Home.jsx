@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { FaStar, FaChevronUp, FaComments } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import placeholder from "../assets/placeholder.png";
@@ -10,13 +11,50 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
-import { FaStar } from "react-icons/fa";
+// ...existing code...
 import item1 from "../assets/item1.jpg";
 import item2 from "../assets/item2.jpg";
 import item3 from "../assets/item3.jpg";
 import Footer from "./Footer";
 
+import nike from "../assets/brands/nike.svg";
+import amazon from "../assets/brands/amazon.svg";
+import apple from "../assets/brands/apple.svg";
+import hp from "../assets/brands/hp.svg";
+import microsoft from "../assets/brands/microsoft.svg";
+import ps4 from "../assets/brands/ps4.svg";
+import samsung from "../assets/brands/samsung.svg";
+import hANDm from "../assets/brands/hANDm.svg";
+
 const Home = () => {
+  // Review carousel state
+  const reviews = [
+    {
+      name: "Amira K.",
+      quote:
+        "Lightning fast delivery and the quality is superb. Love the dark theme too!",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+      name: "Jason T.",
+      quote: "Great curation. Found everything I needed without the clutter.",
+      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    },
+    {
+      name: "Selena M.",
+      quote: "Secure checkout and easy returns. Five stars from me.",
+      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+    },
+  ];
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const reviewTimer = useRef(null);
+
+  useEffect(() => {
+    reviewTimer.current = setInterval(() => {
+      setReviewIndex((i) => (i + 1) % reviews.length);
+    }, 4000);
+    return () => clearInterval(reviewTimer.current);
+  }, [reviews.length]);
   const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +86,7 @@ const Home = () => {
     },
   ];
   const [heroIndex, setHeroIndex] = useState(0);
+  const [showScroll, setShowScroll] = useState(false);
   const heroTimer = useRef(null);
 
   // Featured rail ref (horizontal carousel)
@@ -65,6 +104,15 @@ const Home = () => {
         console.error(err);
         setLoading(false);
       });
+  }, []);
+
+  // Show scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScroll(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -85,10 +133,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans relative">
       {/* Top hero */}
       <section className="bg-[radial-gradient(circle_at_top,#1f2937,#020617)]/90 border-b border-slate-900/30">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid lg:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 grid lg:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
           {/* Left side */}
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/40 px-3 py-1 mb-6 shadow-sm shadow-slate-900/40">
@@ -100,8 +148,14 @@ const Home = () => {
                 Up to 40% off this week
               </span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4 leading-tight">
-              EBucket <br /> Curated looks for modern living.
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 leading-tight">
+              <span className="bg-linear-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent drop-shadow-lg">
+                EBucket
+              </span>
+              <br />
+              <span className="text-white">
+                Curated looks for modern living.
+              </span>
             </h1>
             <p className="text-slate-300 max-w-xl mb-6">
               Discover trending fashion, gadgets, and home decor from trusted
@@ -110,7 +164,7 @@ const Home = () => {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 to="/products"
-                className="inline-flex items-center gap-1 rounded-full bg-slate-100/95 text-slate-950 px-5 py-2.5 font-semibold shadow-lg shadow-slate-950/30 hover:bg-white transition"
+                className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-yellow-300 text-slate-950 px-5 py-2.5 font-semibold shadow-lg shadow-slate-950/30 hover:bg-white transition"
               >
                 Shop now <span aria-hidden>→</span>
               </Link>
@@ -189,7 +243,7 @@ const Home = () => {
                         (i) => (i - 1 + heroSlides.length) % heroSlides.length
                       )
                     }
-                    className="w-9 h-9 rounded-full bg-slate-900/60 border border-slate-700 hover:bg-slate-900/80 flex items-center justify-center"
+                    className="w-9 h-9 rounded-full bg-slate-900/60 border border-slate-700 hover:bg-amber-400 flex items-center justify-center"
                   >
                     <FiChevronLeft />
                   </button>
@@ -197,7 +251,7 @@ const Home = () => {
                     onClick={() =>
                       setHeroIndex((i) => (i + 1) % heroSlides.length)
                     }
-                    className="w-9 h-9 rounded-full bg-slate-900/60 border border-slate-700 hover:bg-slate-900/80 flex items-center justify-center"
+                    className="w-9 h-9 rounded-full bg-slate-900/60 border border-slate-700 hover:bg-amber-400 flex items-center justify-center"
                   >
                     <FiChevronRight />
                   </button>
@@ -220,7 +274,18 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Benefits strip */}
+      {/* Category quick-access bar */}
+      <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mt-10 flex gap-4 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]">
+        {["Fashion", "Tech", "Home", "Beauty", "Sports", "Kids"].map((cat) => (
+          <Link
+            key={cat}
+            to={`/products?category=${cat.toLowerCase()}`}
+            className="shrink-0 px-4 py-2 rounded-full bg-linear-to-r from-amber-400 to-yellow-300 text-slate-950 text-sm uppercase font-semibold transition shadow"
+          >
+            {cat}
+          </Link>
+        ))}
+      </section>
       <section className="bg-slate-950/30 border-b border-slate-900/30 backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap gap-6 justify-between">
           {[
@@ -260,6 +325,62 @@ const Home = () => {
         </div>
       </section>
 
+      {/* News section */}
+      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div>
+            <p className="text-xs tracking-wide uppercase text-amber-400 mb-1">
+              Latest News
+            </p>
+            <h2 className="text-xl font-bold text-white">
+              Shop Updates &amp; Trends
+            </h2>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Black Friday Early Access!",
+              desc: "Get up to 60% off select items. Members shop first.",
+              date: "Nov 4, 2025",
+              img: item1,
+            },
+            {
+              title: "New Brand: Vertex Home",
+              desc: "Explore modern furniture and decor from Vertex, now in stock.",
+              date: "Nov 2, 2025",
+              img: item2,
+            },
+            {
+              title: "Holiday Shipping Deadlines",
+              desc: "Order by Dec 15 for guaranteed delivery before Christmas.",
+              date: "Nov 1, 2025",
+              img: item3,
+            },
+          ].map((news, i) => (
+            <div
+              key={i}
+              className="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col"
+            >
+              <div
+                className="h-32 w-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${news.img})` }}
+              ></div>
+              <div className="p-4 flex flex-col flex-1">
+                <p className="text-xs text-slate-400 mb-1">{news.date}</p>
+                <h3 className="text-base font-bold text-slate-50 mb-2">
+                  {news.title}
+                </h3>
+                <p className="text-sm text-slate-300 mb-3">{news.desc}</p>
+                <span className="text-xs text-amber-400 font-semibold mt-auto">
+                  Read more →
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+      {/* Benefits strip */}
       {/* Featured products */}
       <section className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="flex items-center justify-between gap-3 mb-6">
@@ -310,22 +431,22 @@ const Home = () => {
             </div>
             <div
               ref={featuredRef}
-              className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none]"
+              className="flex gap-4 py-5 pl-5 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none]"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               {featured.map((product) => (
                 <Link
                   key={product._id}
                   to={`/products/${product._id}`}
-                  className="snap-start w-72 shrink-0 group bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden flex flex-col hover:-translate-y-1 hover:border-slate-500/80 hover:bg-slate-900/70 transition"
+                  className="snap-start w-72 shrink-0 group bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden flex flex-col hover:-translate-y-2 hover:scale-[1.03] hover:border-amber-400/80 hover:shadow-2xl transition duration-300"
                 >
                   <div className="relative p-3">
                     <img
                       src={getImageSrc(product.image)}
                       alt={product.name}
-                      className="h-40 w-full object-cover rounded-xl"
+                      className="h-40 w-full object-cover rounded-xl group-hover:scale-105 transition duration-300"
                     />
-                    <span className="absolute top-4 left-4 bg-slate-100 text-slate-950 text-[0.6rem] uppercase tracking-wide px-2 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-4 left-4 bg-linear-to-r from-amber-400 to-yellow-300 text-slate-950 text-[0.6rem] uppercase tracking-wide px-2 py-1 rounded-full shadow-sm font-bold">
                       New
                     </span>
                   </div>
@@ -348,7 +469,7 @@ const Home = () => {
                       <span className="text-base font-bold text-slate-50">
                         ${product.price}
                       </span>
-                      <span className="text-xs bg-slate-100 border border-slate-200 px-2 py-1 rounded-full text-slate-950">
+                      <span className="text-xs bg-amber-400 border border-amber-300 px-2 py-1 rounded-full text-slate-950 font-semibold group-hover:bg-amber-500 transition">
                         View →
                       </span>
                     </div>
@@ -360,86 +481,197 @@ const Home = () => {
         )}
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-white">What customers say</h3>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-4">
-          {[
-            {
-              name: "Amira K.",
-              quote:
-                "Lightning fast delivery and the quality is superb. Love the dark theme too!",
-            },
-            {
-              name: "Jason T.",
-              quote:
-                "Great curation. Found everything I needed without the clutter.",
-            },
-            {
-              name: "Selena M.",
-              quote: "Secure checkout and easy returns. Five stars from me.",
-            },
-          ].map((t, i) => (
-            <div
-              key={i}
-              className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5"
-            >
-              <div className="flex items-center gap-2 text-amber-400 text-sm mb-2">
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-              </div>
-              <p className="text-slate-300 leading-relaxed">“{t.quote}”</p>
-              <p className="mt-3 text-sm text-slate-400">— {t.name}</p>
+      {/* Testimonials Carousel - Modern Style */}
+      <section className="w-full flex justify-center py-14 px-2">
+        <div className="w-full max-w-2xl flex flex-col items-center">
+          <h3 className="text-2xl font-extrabold text-white text-center tracking-tight drop-shadow-lg">
+            What customers say
+          </h3>
+          <div className="relative w-full">
+            <div className="overflow-hidden w-full min-h-80 flex items-center justify-center">
+              {reviews.map((t, i) => (
+                <div
+                  key={i}
+                  className={`absolute inset-0 flex flex-col items-center justify-center px-8 py-10 transition-opacity duration-700 ${
+                    i === reviewIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                  }`}
+                  style={{ minHeight: "320px" }}
+                >
+                  <div className="relative mb-6">
+                    <img
+                      src={t.avatar}
+                      alt={t.name}
+                      className="w-20 h-20 rounded-full border-4 border-amber-400 shadow-xl bg-white object-cover"
+                      style={{ boxShadow: "0 8px 32px 0 rgba(0,0,0,0.18)" }}
+                    />
+                    <span className="absolute -top-4 -left-4 text-5xl text-amber-400 opacity-30 animate-bounce select-none pointer-events-none">
+                      “
+                    </span>
+                    <span className="absolute -bottom-4 -right-4 text-5xl text-amber-400 opacity-30 animate-bounce select-none pointer-events-none">
+                      ”
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-amber-400 text-xl mb-4">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </div>
+                  <div className="bg-linear-to-br from-slate-900/80 via-slate-800/60 to-slate-900/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-slate-800 px-6 py-7 mb-4 w-full max-w-lg">
+                    <p className="text-slate-100 text-lg font-medium leading-relaxed text-center tracking-wide">
+                      {t.quote}
+                    </p>
+                  </div>
+                  <p className="text-base text-amber-300 font-semibold tracking-wide mt-2">
+                    {t.name}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
+            {/* Carousel Controls */}
+            <div className="absolute -bottom-20 left-0 right-0 flex justify-center gap-2">
+              {reviews.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setReviewIndex(i)}
+                  className={`h-2.5 w-10 rounded-full transition-all duration-300 ${
+                    i === reviewIndex
+                      ? "bg-linear-to-r from-amber-400 to-yellow-300 shadow-lg"
+                      : "bg-slate-700/60"
+                  }`}
+                  aria-label={`Show review ${i + 1}`}
+                />
+              ))}
+            </div>
+            <div className="absolute top-1/2 left-2 -translate-y-1/2 z-20">
+              <button
+                onClick={() =>
+                  setReviewIndex(
+                    (i) => (i - 1 + reviews.length) % reviews.length
+                  )
+                }
+                className="bg-slate-900/80 border border-slate-700 rounded-full p-2 text-white hover:bg-amber-400 hover:text-slate-900 transition shadow-lg"
+                aria-label="Previous review"
+                style={{ zIndex: 20 }}
+              >
+                <FiChevronLeft className="text-2xl" />
+              </button>
+            </div>
+            <div className="absolute top-1/2 right-2 -translate-y-1/2 z-20">
+              <button
+                onClick={() => setReviewIndex((i) => (i + 1) % reviews.length)}
+                className="bg-slate-900/80 border border-slate-700 rounded-full p-2 text-white hover:bg-amber-400 hover:text-slate-900 transition shadow-lg"
+                aria-label="Next review"
+                style={{ zIndex: 20 }}
+              >
+                <FiChevronRight className="text-2xl" />
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Brand strip */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between gap-6 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]">
-          {["Nova", "Apex", "Nimbus", "Vertex", "Orion", "Pulse"].map((b) => (
-            <div
-              key={b}
-              className="shrink-0 text-slate-400 text-sm tracking-wider border border-slate-800 rounded-full px-4 py-2 bg-slate-900/40"
-            >
-              {b}
+      {/* Brand strip - Minimalist Modern with Animation and site-matching background */}
+      <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-20 bg-slate-950 border-b border-slate-900/40">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          <h3 className="text-xl font-semibold text-slate-100 mb-2 text-center tracking-tight" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Trusted by leading brands
+          </h3>
+          <p className="text-sm text-slate-400 mb-8 text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Partners that define quality and innovation
+          </p>
+          <div className="w-full overflow-x-hidden">
+            <div className="flex items-center gap-16 animate-scroll-x whitespace-nowrap py-2" style={{ animation: 'scrollX 15s linear infinite' }}>
+              {[ 
+                { name: "Nike", url: nike },
+                { name: "Amazon", url: amazon },
+                { name: "Samsung", url: samsung },
+                { name: "Apple", url: apple },
+                { name: "HP", url: hp },
+                { name: "Microsoft", url: microsoft },
+                { name: "PS4", url: ps4 },
+                { name: "H & M", url: hANDm },
+              ].map((brand, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center group"
+                  style={{ minWidth: '80px' }}
+                >
+                  <img
+                    src={brand.url}
+                    alt={brand.name}
+                    className="h-18 w-auto object-contain transition duration-200"
+                    style={{ maxWidth: '100px', opacity: 0.9 }}
+                  />
+                  <span className="mt-2 text-xs text-slate-400 font-semibold tracking-wide" style={{ fontFamily: 'Inter, sans-serif' }}>{brand.name}</span>
+                </div>
+              ))}
+              {/* Repeat for seamless scroll */}
+              {[ 
+                { name: "Nike", url: nike },
+                { name: "Amazon", url: amazon },
+                { name: "Samsung", url: samsung },
+                { name: "Apple", url: apple },
+                { name: "HP", url: hp },
+                { name: "Microsoft", url: microsoft },
+                { name: "PS4", url: ps4 },
+                { name: "H & M", url: hANDm },
+              ].map((brand, i) => (
+                <div
+                  key={"repeat-" + i}
+                  className="flex flex-col items-center group"
+                  style={{ minWidth: '80px' }}
+                >
+                  <img
+                    src={brand.url}
+                    alt={brand.name}
+                    className="h-18 w-auto object-contain transition duration-200"
+                    style={{ maxWidth: '100px', opacity: 0.8 }}
+                  />
+                  <span className="mt-2 text-xs text-slate-400 font-semibold tracking-wide" style={{ fontFamily: 'Inter, sans-serif' }}>{brand.name}</span>
+                </div>
+              ))}
             </div>
-          ))}
+            <style>{`
+              @keyframes scrollX {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+            `}</style>
+          </div>
         </div>
       </section>
 
       {/* CTA footer */}
-      <section className="bg-linear-to-r from-slate-950 via-slate-900 to-slate-950 text-white py-14 mt-6 border-t border-slate-800/40">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-6">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/60">
-              Join our community
-            </p>
-            <h2 className="text-2xl font-bold mt-1">
-              Get exclusive offers &amp; early access.
-            </h2>
-            <p className="text-sm text-white/70 mt-2">
-              We send 1–2 emails per month. No spam.
-            </p>
+      <section className="py-14 flex justify-center items-center">
+        <div className="max-w-xl w-full bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 rounded-3xl shadow-2xl px-8 py-10 flex flex-col items-center gap-6 border border-slate-800">
+          <div className="flex items-center gap-3">
+            <FaComments className="text-3xl text-amber-400" />
+            <div>
+              <p className="text-xs uppercase tracking-wide text-white/60">
+                Join our community
+              </p>
+              <h2 className="text-2xl font-bold mt-1">
+                Get exclusive offers &amp; early access.
+              </h2>
+              <p className="text-sm text-white/70 mt-2">
+                We send 1–2 emails per month. No spam.
+              </p>
+            </div>
           </div>
           <form
-            className="flex gap-3 flex-wrap"
+            className="flex gap-3 flex-wrap w-full justify-center"
             onSubmit={(e) => e.preventDefault()}
           >
             <input
               type="email"
               placeholder="Enter your email"
-              className="min-w-[220px] rounded-full bg-slate-900/40 border border-slate-700 px-4 py-2 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-500"
+              className="min-w-[220px] rounded-full bg-slate-900/40 border border-slate-700 px-4 py-2 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
             />
             <button
               type="submit"
-              className="rounded-full bg-white text-slate-900 px-6 py-2 font-semibold cursor-pointer hover:bg-slate-100 transition"
+              className="rounded-full bg-amber-400 text-slate-900 px-6 py-2 font-semibold cursor-pointer hover:bg-amber-500 transition shadow"
             >
               Subscribe
             </button>
@@ -449,6 +681,28 @@ const Home = () => {
       <section>
         <Footer />
       </section>
+
+      {/* Floating chat/help button */}
+      <button
+        className="fixed bottom-8 right-8 z-50 bg-amber-400 text-slate-900 rounded-full shadow-lg p-4 flex items-center gap-2 hover:bg-amber-500 transition"
+        style={{ boxShadow: "0 4px 24px 0 rgba(0,0,0,0.2)" }}
+        aria-label="Chat with support"
+        onClick={() => window.alert("Chat support coming soon!")}
+      >
+        <FaComments className="text-xl" />
+        <span className="font-semibold hidden sm:inline">Help</span>
+      </button>
+
+      {/* Scroll to top button */}
+      {showScroll && (
+        <button
+          className="fixed bottom-24 right-8 z-50 bg-slate-900/80 text-white rounded-full shadow-lg p-3 hover:bg-slate-800 transition"
+          aria-label="Scroll to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <FaChevronUp className="text-xl" />
+        </button>
+      )}
     </div>
   );
 };

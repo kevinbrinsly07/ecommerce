@@ -13,6 +13,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("popularity"); // 'popularity' | 'price-asc' | 'price-desc' | 'newest'
   const [view, setView] = useState("grid"); // 'grid' | 'list'
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Top banner carousel
   const bannerSlides = [
@@ -82,13 +83,35 @@ const Products = () => {
     return arr; // popularity (server-side default)
   };
 
-  const filteredProducts = getSorted(
-    products.filter((p) => {
-      const byCat =
-        selectedCategory === "All" ? true : p.category === selectedCategory;
-      return byCat;
-    })
-  );
+  // Group products by category
+  // Filter and search products
+  const getFilteredProducts = (arr) => {
+    let filtered = arr;
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((p) => p.category === selectedCategory);
+    }
+    if (searchTerm.trim()) {
+      const term = searchTerm.trim().toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name?.toLowerCase().includes(term) ||
+          p.category?.toLowerCase().includes(term) ||
+          p.description?.toLowerCase().includes(term)
+      );
+    }
+    return getSorted(filtered);
+  };
+
+  // For category sections
+  const productsByCategory = categories
+    .filter((c) => c !== "All")
+    .map((cat) => ({
+      category: cat,
+      products: getFilteredProducts(products.filter((p) => p.category === cat)),
+    }));
+
+  // For dropdown filtered view
+  const filteredProducts = getFilteredProducts(products);
 
   const getImageSrc = (img) => {
     if (!img) return placeholder;
@@ -261,12 +284,13 @@ const Products = () => {
                   List
                 </button>
               </div>
-              {/* (Disabled) Search */}
+              {/* Search */}
               <div className="hidden sm:block">
                 <div className="flex items-center gap-2 bg-slate-900/40 border border-slate-800 rounded-xl px-3 py-2 shadow-sm shadow-slate-950/30 sm:min-w-60 backdrop-blur">
                   <span className="text-slate-400 text-sm">🔍</span>
                   <input
-                    disabled
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="bg-transparent flex-1 outline-none text-sm text-slate-100 placeholder:text-slate-500"
                     placeholder="Search products..."
                   />
@@ -276,14 +300,9 @@ const Products = () => {
           </div>
         </header>
 
-        {loading && (
-          <div
-            className={`grid gap-6 ${
-              view === "list"
-                ? "grid-cols-1"
-                : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-            }`}
-          >
+        {/* Products divided by category */}
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={`sk-${i}`}
@@ -298,118 +317,119 @@ const Products = () => {
               </div>
             ))}
           </div>
-        )}
-
-        <div
-          className={`grid gap-6 ${
-            view === "list"
-              ? "grid-cols-1"
-              : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-          }`}
-        >
-          {filteredProducts.map((product) => {
-            const imgs = getImages(product);
-            const idx = imgIndexById[product._id] ?? 0;
-            const rating = product.rating ?? 4.5;
-            const reviews = product.reviews ?? 120;
-            return (
-              <div
-                key={product._id}
-                className="group bg-slate-900/40 rounded-2xl border border-slate-800 overflow-hidden hover:-translate-y-px hover:border-slate-600/80 hover:bg-slate-900/70 transition flex flex-col"
-              >
-                <div className="relative h-48 bg-slate-800">
-                  {/* Slide */}
-                  <img
-                    src={imgs[idx]}
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                  />
-                  {/* Hover Quick View */}
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                    <Link
-                      to={`/products/${product._id}`}
-                      className="pointer-events-auto inline-flex items-center gap-1 text-xs font-semibold text-slate-950 bg-slate-100/95 hover:bg-white rounded-full px-4 py-2 shadow-sm"
-                    >
-                      Quick View →
-                    </Link>
+        ) : (
+          <>
+            {productsByCategory.map(({ category, products }) => (
+              products.length > 0 && (
+                <section key={category} className="mb-14">
+                  <div className="flex items-center justify-between mb-3 mt-14">
+                    <h2 className="text-lg font-semibold text-slate-300 tracking-wide px-4 py-1">
+                      {category}
+                    </h2>
+                    <div className="text-xs text-slate-400">Category picks</div>
                   </div>
-                  {/* Controls */}
-                  {imgs.length > 1 && (
-                    <>
-                      <button
-                        onClick={() => prevImg(product._id, imgs)}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 text-slate-100 border border-slate-700 hover:bg-slate-900/70"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        onClick={() => nextImg(product._id, imgs)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 text-slate-100 border border-slate-700 hover:bg-slate-900/70"
-                      >
-                        ›
-                      </button>
-                      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-                        {imgs.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={() =>
-                              setImgIndexById((prev) => ({
-                                ...prev,
-                                [product._id]: i,
-                              }))
-                            }
-                            className={`h-1.5 rounded-full transition-all ${
-                              i === idx
-                                ? "w-6 bg-slate-100"
-                                : "w-3 bg-slate-500/50"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  <span className="absolute top-3 left-3 bg-slate-100 text-slate-950 text-[0.6rem] uppercase tracking-wide px-2 py-1 rounded-full shadow-sm">
-                    New
-                  </span>
-                </div>
-                <div className="p-4 flex flex-col gap-3 flex-1">
-                  <p className="text-xs uppercase tracking-wide text-slate-400">
-                    {product.category || "General"}
-                  </p>
-                  <p className="text-sm font-semibold text-slate-50 leading-snug line-clamp-2 min-h-10">
-                    {product.name}
-                  </p>
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-amber-400">★★★★★</span>
-                    <span className="text-slate-400">
-                      {rating} · {reviews} reviews
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 mt-auto">
-                    <span className="text-base font-bold text-slate-50">
-                      ${product.price}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        to={`/products/${product._id}`}
-                        className="inline-flex items-center gap-1 text-xs font-medium text-slate-950 bg-slate-100 hover:bg-white rounded-full px-4 py-2 transition shadow-sm"
-                      >
-                        View
-                        <span aria-hidden>→</span>
-                      </Link>
+                  <div
+                    className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] pb-2"
+                    style={{ WebkitOverflowScrolling: "touch" }}
+                  >
+                    <div className="flex gap-4 min-w-max pr-2">
+                      {products.map((product) => {
+                        const imgs = getImages(product);
+                        const idx = imgIndexById[product._id] ?? 0;
+                        const rating = product.rating ?? 4.5;
+                        const reviews = product.reviews ?? 120;
+                        return (
+                          <div
+                            key={product._id}
+                            className="w-64 shrink-0 bg-slate-900/40 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-600/80 transition flex flex-col"
+                          >
+                            <div className="relative h-44 bg-slate-800">
+                              <img
+                                src={imgs[idx]}
+                                alt={product.name}
+                                className="h-full w-full object-cover"
+                              />
+                              <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <Link
+                                  to={`/products/${product._id}`}
+                                  className="pointer-events-auto inline-flex items-center gap-1 text-xs font-semibold text-slate-950 bg-slate-100/95 hover:bg-white rounded-full px-4 py-2 shadow-sm"
+                                >
+                                  Quick View →
+                                </Link>
+                              </div>
+                              {imgs.length > 1 && (
+                                <>
+                                  <button
+                                    onClick={() => prevImg(product._id, imgs)}
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-950/70 text-slate-100 border border-slate-700 hover:bg-slate-900/70"
+                                  >
+                                    ‹
+                                  </button>
+                                  <button
+                                    onClick={() => nextImg(product._id, imgs)}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-950/70 text-slate-100 border border-slate-700 hover:bg-slate-900/70"
+                                  >
+                                    ›
+                                  </button>
+                                  <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+                                    {imgs.map((_, i) => (
+                                      <button
+                                        key={i}
+                                        onClick={() =>
+                                          setImgIndexById((prev) => ({
+                                            ...prev,
+                                            [product._id]: i,
+                                          }))
+                                        }
+                                        className={`h-1.5 rounded-full transition-all ${
+                                          i === idx
+                                            ? "w-6 bg-slate-100"
+                                            : "w-3 bg-slate-500/50"
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <div className="p-4 flex flex-col gap-2 flex-1">
+                              <p className="text-xs uppercase tracking-wide text-slate-400">
+                                {product.category || "General"}
+                              </p>
+                              <p className="text-sm font-medium text-slate-50 leading-snug line-clamp-2 min-h-10">
+                                {product.name}
+                              </p>
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="text-amber-400">★★★★★</span>
+                                <span className="text-slate-400">
+                                  {rating} · {reviews} reviews
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between gap-2 mt-auto">
+                                <span className="text-base font-bold text-slate-50">
+                                  ${product.price}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <Link
+                                    to={`/products/${product._id}`}
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-slate-950 bg-slate-100 hover:bg-white rounded-full px-4 py-2 transition shadow-sm"
+                                  >
+                                    View
+                                    <span aria-hidden>→</span>
+                                  </Link>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-          {!loading && filteredProducts.length === 0 && (
-            <p className="text-slate-400">
-              No products found for the selected filters.
-            </p>
-          )}
-        </div>
+                </section>
+              )
+            ))}
+          </>
+        )}
 
         {/* You might also like - horizontal rail */}
         <div className="mt-12 mb-12">
