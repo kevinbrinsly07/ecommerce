@@ -25,6 +25,11 @@ const Products = () => {
   // Sidebar navigation toggle (for mobile)
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Suggestions for search
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef();
+
   // Top banner carousel
   const bannerSlides = [
     {
@@ -62,6 +67,34 @@ const Products = () => {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+
+  // Fetch suggestions as user types
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setSuggestions([]);
+      return;
+    }
+    const delayDebounce = setTimeout(() => {
+      axios
+        .get(`http://localhost:5000/api/products/suggestions/search?q=${encodeURIComponent(searchTerm)}`)
+        .then((res) => setSuggestions(res.data))
+        .catch(() => setSuggestions([]));
+    }, 200);
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm]);
+
+  // Hide suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    if (showSuggestions) {
+      document.addEventListener("mousedown", handleClick);
+    }
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showSuggestions]);
 
   useEffect(() => {
     bannerTimer.current = setInterval(() => {
@@ -396,18 +429,51 @@ const Products = () => {
         </aside>
         <div className="w-full flex-1 min-w-0 h-full overflow-y-auto">
           {/* Search bar at top, full width */}
-          <div className="w-full mb-6">
-            <div className="flex items-center gap-2 bg-slate-900/40 border border-slate-800 rounded-xl px-3 py-5 shadow-sm shadow-slate-950/30 w-full backdrop-blur">
+          <div className="w-full mb-6 relative" ref={suggestionsRef}>
+            <div className="flex items-center gap-2 bg-slate-900/40 border border-slate-800 rounded-xl px-3 py-6 shadow-sm shadow-slate-950/30 w-full backdrop-blur">
               <span className="text-slate-400 text-lg">
                 <FaSearch />
               </span>
               <input
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent flex-1 outline-none text-base text-slate-100 placeholder:text-slate-500"
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => searchTerm && setShowSuggestions(true)}
+                className="bg-transparent flex-1 outline-none text-md font-bold text-slate-100 placeholder:text-slate-500"
                 placeholder="Search products..."
+                autoComplete="off"
               />
             </div>
+            {showSuggestions && suggestions.length > 0 && (
+              <ul className="absolute z-50 left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-xl shadow-lg max-h-72 overflow-y-auto">
+                {suggestions.map((s) => (
+                  <li key={s._id}>
+                    <Link
+                      to={`/products/${s._id}`}
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-slate-800 transition text-slate-100"
+                      onClick={() => {
+                        setSearchTerm(s.name);
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      <img
+                        src={s.image?.startsWith('http') ? s.image : `http://localhost:5000${s.image}`}
+                        alt={s.name}
+                        className="w-8 h-8 object-cover rounded"
+                        style={{ background: '#222' }}
+                        onError={e => { e.target.onerror = null; e.target.src = placeholder; }}
+                      />
+                      <div>
+                        <div className="font-semibold text-sm">{s.name}</div>
+                        <div className="text-xs text-slate-400">{s.category}</div>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {/* Carousel positioned above Explore Products */}
           <div className="relative mb-8 rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/40 backdrop-blur">
@@ -427,7 +493,7 @@ const Products = () => {
               ))}
               <div className="absolute inset-0 bg-slate-950/60" />
               {/* Text + CTAs */}
-              <div className="relative z-10 h-full flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 gap-4">
+              <div className="relative z-10 h-full flex flex-col sm:flex-row items-cente sm:justify-between px-6 py-4 sm:px-8 gap-4">
                 <div className="flex-1">
                   <p className="text-xs uppercase tracking-widest text-slate-300">
                     Trending
